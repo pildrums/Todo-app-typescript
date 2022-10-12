@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 /**
@@ -34,20 +34,72 @@ import { useForm } from "react-hook-form";
 //   );
 // };
 /**
- * @description useForm을 이용해서 기존의 useState와 onChange, onSubmit 함수를 대체함.
+ * @description form 안에 input 요소가 많을 경우에는 useState와 onChange, onSubmit 함수를 일일히 만들어주기 힘듦
+ * @description useForm을 이용해서 기존의 useState와 onChange, onSubmit 함수를 대체함
+ * @description register: form 안에 있는 각 입력란을 등록하는 함수
+ * @description watch: 입력여부를 확인하는 함수 (현재 코드에서는 지움)
+ * @description handleSubmit: form 요소에서 발생하는 submit 이벤트를 처리해주는 함수
+ * @description formState: form 양식이 현재 어떤 상태인지를 담는 함수
  */
 const TodoList = () => {
-  const { register, watch } = useForm();
-  console.log(watch());
+  const { register, handleSubmit, formState } = useForm();
+  const onValid = (data: any) => {
+    console.log(data);
+  };
+  console.log(formState.errors);
+  // console.log(watch());
   return (
     <div>
-      <form>
-        <input {...register("email")} placeholder="Email" />
-        <input {...register("first_name")} placeholder="First Name" />
-        <input {...register("last_name")} placeholder="Last Name" />
-        <input {...register("username")} placeholder="Username" />
-        <input {...register("password")} placeholder="Password" />
-        <input {...register("password_confirm")} placeholder="Password Confirm" />
+      <form
+        style={{ display: "flex", flexDirection: "column" }}
+        onSubmit={handleSubmit(onValid)}
+      >
+        <input
+          {...register("email", { required: "Please, Check your email." })}
+          placeholder="Email"
+        />
+        <input
+          {...register("first_name", {
+            required: "Please, Check your first name.",
+          })}
+          placeholder="First Name"
+        />
+        <input
+          {...register("last_name", {
+            required: "Please, Check your last name",
+          })}
+          placeholder="Last Name"
+        />
+        <input
+          {...register("username", {
+            required: "Please, Check your username",
+            minLength: {
+              value: 10,
+              message: "Username is too short.",
+            },
+          })}
+          placeholder="Username"
+        />
+        <input
+          {...register("password", {
+            required: "Please, Check your password",
+            minLength: {
+              value: 5,
+              message: 'Password is too short'
+            },
+          })}
+          placeholder="Password"
+        />
+        <input
+          {...register("password_confirm", {
+            required: "Password Confirmation is required.",
+            minLength: {
+              value: 5,
+              message: "Password Confirmation is too short.",
+            },
+          })}
+          placeholder="Password Confirmation"
+        />
         <button>Add</button>
       </form>
     </div>
