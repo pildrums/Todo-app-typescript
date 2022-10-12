@@ -40,6 +40,7 @@ import { useForm } from "react-hook-form";
  * @description watch: 입력여부를 확인하는 함수 (현재 코드에서는 지움)
  * @description handleSubmit: form 요소에서 발생하는 submit 이벤트를 처리해주는 함수
  * @description formState: form 양식이 현재 어떤 상태인지를 담는 함수
+ * @todo form error 처리
  */
 const TodoList = () => {
   const { register, handleSubmit, formState } = useForm();
