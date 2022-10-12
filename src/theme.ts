@@ -10,19 +10,4 @@ export const darkTheme: DefaultTheme = {
   textColor: '#fff',
   accentColor: '#9c88ff',
   cardColor: 'transparent',
-  buttonColor: '#fff',
-  buttonIconColor: '#ff884b',
-  borderColor: '#fff',
-  buttonTextColor: '#2f3640',
-};
-
-export const lightTheme: DefaultTheme = {
-  bgColor: '#f5f5f5',
-  textColor: '#333',
-  accentColor: '#9c88ff',
-  cardColor: '#fff',
-  buttonColor: '#2f3640',
-  buttonIconColor: '#fdff00',
-  borderColor: '#fff',
-  buttonTextColor: '#fff',
 };
