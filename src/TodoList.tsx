@@ -7,21 +7,27 @@ import { useState } from "react";
  */
 const TodoList = () => {
   const [todo, setTodo] = useState("");
+  const [todoError, setTodoError] = useState("");
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     const {
       currentTarget: { value },
     } = event;
+    setTodoError("");
     setTodo(value);
   };
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(todo);
+    if (todo.length < 10) {
+      return setTodoError("Todo should be longer");
+    }
+    console.log("submit");
   };
   return (
     <div>
       <form onSubmit={onSubmit}>
         <input onChange={onChange} value={todo} placeholder="Write a todo" />
         <button>Add</button>
+        {todoError !== "" ? todoError : null}
       </form>
     </div>
   );
