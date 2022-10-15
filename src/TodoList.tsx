@@ -1,6 +1,20 @@
 // import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+interface IFormData {
+  errors: {
+    email: {
+      message: string;
+    };
+  };
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+}
+
 /**
  * @description 기존의 useState를 이용해서 form과 input을 다룸 (Legacy)
  * @todo React-Hook-Form을 이용해서 좀 더 단순하게 form을 다뤄야 함. (Done)
@@ -40,14 +54,20 @@ import { useForm } from "react-hook-form";
  * @description watch: 입력여부를 확인하는 함수 (현재 코드에서는 지움)
  * @description handleSubmit: form 요소에서 발생하는 submit 이벤트를 처리해주는 함수
  * @description formState: form 양식이 현재 어떤 상태인지를 담는 함수
- * @todo form error 처리
+ * @description validation 방식 1. 정규식 사용
+ * @description email 정규식: /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i
  */
 const TodoList = () => {
-  const { register, handleSubmit, formState } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm<IFormData>();
   const onValid = (data: any) => {
     console.log(data);
   };
-  console.log(formState.errors);
+
   // console.log(watch());
   return (
     <div>
@@ -56,21 +76,31 @@ const TodoList = () => {
         onSubmit={handleSubmit(onValid)}
       >
         <input
-          {...register("email", { required: "Please, Check your email." })}
+          {...register("email", {
+            required: "Please, Check your email.",
+            pattern: {
+              value:
+                /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i,
+              message: "Email is invalid",
+            },
+          })}
           placeholder="Email"
         />
+        <span>{errors.email?.message}</span>
         <input
-          {...register("first_name", {
+          {...register("firstName", {
             required: "Please, Check your first name.",
           })}
           placeholder="First Name"
         />
+        <span>{errors.firstName?.message}</span>
         <input
-          {...register("last_name", {
+          {...register("lastName", {
             required: "Please, Check your last name",
           })}
           placeholder="Last Name"
         />
+        <span>{errors.lastName?.message}</span>
         <input
           {...register("username", {
             required: "Please, Check your username",
@@ -81,26 +111,41 @@ const TodoList = () => {
           })}
           placeholder="Username"
         />
+        <span>{errors.username?.message}</span>
         <input
           {...register("password", {
             required: "Please, Check your password",
             minLength: {
-              value: 5,
-              message: 'Password is too short'
+              value: 6,
+              message: "Password is too short.",
+            },
+            maxLength: {
+              value: 12,
+              message: "Password is too long.",
+            },
+            pattern: {
+              value: /^[A-Za-z0-9]{6,12}$/,
+              message: "Password is too short",
             },
           })}
           placeholder="Password"
+          type="password"
         />
+        <span>{errors.password && errors.password.message}</span>
         <input
-          {...register("password_confirm", {
+          {...register("passwordConfirm", {
             required: "Password Confirmation is required.",
-            minLength: {
-              value: 5,
-              message: "Password Confirmation is too short.",
+            validate: {
+              matchesPreviousPassword: (value) => {
+                const { password } = getValues();
+                return password === value || "Password is not matched";
+              },
             },
           })}
           placeholder="Password Confirmation"
+          type="password"
         />
+        <span>{errors.passwordConfirm && errors.passwordConfirm.message}</span>
         <button>Add</button>
       </form>
     </div>
