@@ -1,52 +1,16 @@
 // import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-interface IFormData {
-  errors: {
-    email: {
-      message: string;
-    };
-  };
+interface IForm {
+  email: string;
   firstName: string;
   lastName: string;
   username: string;
-  email: string;
   password: string;
   passwordConfirm: string;
+  extraError?: string;
 }
 
-/**
- * @description 기존의 useState를 이용해서 form과 input을 다룸 (Legacy)
- * @todo React-Hook-Form을 이용해서 좀 더 단순하게 form을 다뤄야 함. (Done)
- * @returns TodoList Component
- */
-// const TodoList = () => {
-//   const [todo, setTodo] = useState("");
-//   const [todoError, setTodoError] = useState("");
-//   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-//     const {
-//       currentTarget: { value },
-//     } = event;
-//     setTodoError("");
-//     setTodo(value);
-//   };
-//   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-//     event.preventDefault();
-//     if (todo.length < 10) {
-//       return setTodoError("Todo should be longer");
-//     }
-//     console.log("submit");
-//   };
-//   return (
-//     <div>
-//       <form onSubmit={onSubmit}>
-//         <input onChange={onChange} value={todo} placeholder="Write a todo" />
-//         <button>Add</button>
-//         {todoError !== "" ? todoError : null}
-//       </form>
-//     </div>
-//   );
-// };
 /**
  * @description form 안에 input 요소가 많을 경우에는 useState와 onChange, onSubmit 함수를 일일히 만들어주기 힘듦
  * @description useForm을 이용해서 기존의 useState와 onChange, onSubmit 함수를 대체함
@@ -56,17 +20,32 @@ interface IFormData {
  * @description formState: form 양식이 현재 어떤 상태인지를 담는 함수
  * @description validation 방식 1. 정규식 사용
  * @description email 정규식: /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i
+ * @description 기존의 useState를 이용해서 form과 input을 다룸 (Legacy)
+ * @todo React-Hook-Form을 이용해서 좀 더 단순하게 form을 다뤄야 함. (Done)
+ * @returns TodoList Component
  */
 const TodoList = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    getValues,
-  } = useForm<IFormData>();
-  const onValid = (data: any) => {
-    console.log(data);
+    setError,
+  } = useForm<IForm>({
+    defaultValues: {
+      email: "@naver.com",
+    },
+  });
+  const onValid = (data: IForm) => {
+    if (data.password !== data.passwordConfirm) {
+      setError(
+        "passwordConfirm",
+        { message: "Password is not matched" },
+        { shouldFocus: true }
+      );
+    }
+    // setError("extraError", { message: "Server is offline." });
   };
+  console.log(errors);
 
   // console.log(watch());
   return (
@@ -77,11 +56,10 @@ const TodoList = () => {
       >
         <input
           {...register("email", {
-            required: "Please, Check your email.",
+            required: "Email is required",
             pattern: {
-              value:
-                /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i,
-              message: "Email is invalid",
+              value: /^[A-Za-z0-9._%+-]+@naver.com$/,
+              message: "Only naver.com emails allowed",
             },
           })}
           placeholder="Email"
@@ -89,7 +67,13 @@ const TodoList = () => {
         <span>{errors.email?.message}</span>
         <input
           {...register("firstName", {
-            required: "Please, Check your first name.",
+            required: "write here",
+            validate: {
+              noNico: (value) =>
+                !value.includes("nico") ? "no nico allowed" : true,
+              noNick: (value) =>
+                !value.includes("nick") ? "no nick allowed" : true,
+            },
           })}
           placeholder="First Name"
         />
@@ -117,36 +101,25 @@ const TodoList = () => {
             required: "Please, Check your password",
             minLength: {
               value: 6,
-              message: "Password is too short.",
-            },
-            maxLength: {
-              value: 12,
-              message: "Password is too long.",
-            },
-            pattern: {
-              value: /^[A-Za-z0-9]{6,12}$/,
               message: "Password is too short",
             },
           })}
           placeholder="Password"
-          type="password"
         />
-        <span>{errors.password && errors.password.message}</span>
+        <span>{errors.password?.message}</span>
         <input
           {...register("passwordConfirm", {
             required: "Password Confirmation is required.",
-            validate: {
-              matchesPreviousPassword: (value) => {
-                const { password } = getValues();
-                return password === value || "Password is not matched";
-              },
+            minLength: {
+              value: 6,
+              message: "Password Confirmation is too short.",
             },
           })}
           placeholder="Password Confirmation"
-          type="password"
         />
-        <span>{errors.passwordConfirm && errors.passwordConfirm.message}</span>
+        <span>{errors.passwordConfirm?.message}</span>
         <button>Add</button>
+        <span>{errors.extraError?.message}</span>
       </form>
     </div>
   );
