@@ -7,7 +7,7 @@ interface IForm {
 }
 
 function CreateTodo() {
-  const setTodos = useSetRecoilState(todoState)
+  const setTodos = useSetRecoilState(todoState);
   const { register, handleSubmit, setValue } = useForm<IForm>();
   const handleValid = ({ todo }: IForm) => {
     setTodos((prev) => [
@@ -16,7 +16,6 @@ function CreateTodo() {
     ]);
     setValue("todo", "");
   };
-  // console.log(todos);
   return (
     <form onSubmit={handleSubmit(handleValid)}>
       <input

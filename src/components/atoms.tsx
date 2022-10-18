@@ -11,6 +11,11 @@ export interface ITodo {
   category: "TODO" | "DOING" | "DONE";
 }
 
+export const categoryState = atom({
+  key: "category",
+  default: "TODO",
+});
+
 export const todoState = atom<ITodo[]>({
   key: "todo",
   default: [],
@@ -20,10 +25,12 @@ export const todoSelector = selector({
   key: "todoSelector",
   get: ({ get }) => {
     const todos = get(todoState);
-    return [
-      todos.filter((todo) => todo.category === "TODO"),
-      todos.filter((todo) => todo.category === "DOING"),
-      todos.filter((todo) => todo.category === "DONE"),
-    ];
+    const category = get(categoryState);
+    if (category === "TODO")
+      return todos.filter((todo) => todo.category === "TODO");
+    if (category === "DOING")
+      return todos.filter((todo) => todo.category === "DOING");
+    if (category === "DONE")
+      return todos.filter((todo) => todo.category === "DONE");
   },
 });
