@@ -17,6 +17,15 @@ function Todo({ text, category, id }: ITodo) {
       ];
     });
   };
+  const deleteTodo = () => {
+    setTodos((oldTodos) => {
+      const targetIndex = oldTodos.findIndex((todo) => todo.id === id);
+      return [
+        ...oldTodos.slice(0, targetIndex),
+        ...oldTodos.slice(targetIndex + 1),
+      ];
+    });
+  };
   return (
     <li>
       <span>{text}</span>
@@ -35,6 +44,7 @@ function Todo({ text, category, id }: ITodo) {
           Done
         </button>
       )}
+      <button onClick={deleteTodo}>Delete</button>
     </li>
   );
 }
