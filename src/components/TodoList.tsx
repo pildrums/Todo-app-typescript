@@ -7,7 +7,7 @@ function TodoList() {
   const todos = useRecoilValue(todoSelector);
   const [category, setCategory] = useRecoilState(categoryState);
   const onInput = (event: React.FocusEvent<HTMLSelectElement>) => {
-    setCategory(event.currentTarget.value);
+    setCategory(event.currentTarget.value as any);
   };
   return (
     <div>

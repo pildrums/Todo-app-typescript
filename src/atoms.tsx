@@ -1,5 +1,7 @@
 import { atom, selector } from "recoil";
 
+type categories = "TODO" | "DOING" | "DONE";
+
 /**
  * selector는 atom의 output을 변형시키는 도구
  * 즉 기존에 만들어 놓은 atom을 변화를 줄 수 있음
@@ -8,10 +10,10 @@ import { atom, selector } from "recoil";
 export interface ITodo {
   text: string;
   id: number;
-  category: "TODO" | "DOING" | "DONE";
+  category: categories;
 }
 
-export const categoryState = atom({
+export const categoryState = atom<categories>({
   key: "category",
   default: "TODO",
 });
