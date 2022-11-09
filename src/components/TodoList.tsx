@@ -12,12 +12,12 @@ function TodoList() {
     // 첫번째 sol은 event.currentTarget.value의 타입을 any로 지정해줘야 함(좋은 방식 아님)
     setCategory(event.currentTarget.value as any);
   };
-  console.log(todos);
   return (
     <div>
-      <h1>Todos</h1>
+      <h1>할 일</h1>
       <hr />
       <select value={category} onInput={onInput}>
+        {/* <option value={Categories.ALL}>All</option> */}
         <option value={Categories.TODO}>Todo</option>
         <option value={Categories.DOING}>Doing</option>
         <option value={Categories.DONE}>Done</option>

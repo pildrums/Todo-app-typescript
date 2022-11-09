@@ -29,6 +29,7 @@ function Todo({ text, category, id }: ITodo) {
   return (
     <li>
       <span>{text}</span>
+      <span>[{category}]</span>
       {category !== Categories.DOING && (
         <button name={Categories.DOING} onClick={onClick}>
           Doing
